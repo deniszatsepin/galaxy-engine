@@ -1,0 +1,41 @@
+{
+  "name": "galaxy-engine",
+  "version": "1.0.0",
+  "description": "3D JavaScript game engine",
+  "main": "index.js",
+  "repository": "git",
+  "author": "Denis Zatsepin <denis@zatsepin.spb.ru>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack-dev-server --config webpack.dev.config.js"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.3.2",
+    "babel-plugin-transform-es2015-spread": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-es2015-webpack2": "^1.0.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "brfs": "^1.4.3",
+    "eslint": "^3.16.1",
+    "file-loader": "^0.10.1",
+    "glslify": "^6.0.1",
+    "glslify-loader": "^1.0.2",
+    "raw-loader": "^0.5.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1",
+    "webpack-glsl-loader": "^1.0.1"
+  },
+  "dependencies": {
+    "gl-geometry": "^3.1.1",
+    "gl-matrix": "^2.3.2",
+    "gl-shader": "^4.2.1",
+    "glsl-diffuse-lambert": "^1.0.0",
+    "primitive-cube": "^2.0.0",
+    "primitive-plane": "^1.1.0",
+    "redux": "^3.6.0",
+    "uuid": "^3.0.1"
+  }
+}
