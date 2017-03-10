@@ -1,6 +1,6 @@
 /**
- * Created by denis.zatsepin on 09/12/2016.
- */
+* Created by denis.zatsepin on 09/12/2016.
+*/
 'use strict';
 
 import {
@@ -20,12 +20,31 @@ export default class ServiceManager {
     this._store = store;
   }
 
-  addService(service) {
+  addService(NewService, params = {}) {
+    const { props = {}, connector = {} } = params;
+    const mapStateToProps = connector.mapStateToProps;
+    const mapDispatchToProps = connector.mapDispatchToProps;
+
+    if (mapStateToProps) {
+      Object.assign(
+        props,
+        ...mapStateToProps(this._store.getState())
+      );
+    }
+
+    if (mapDispatchToProps) {
+      Object.assign(props, mapDispatchToProps(this._store.dispatch));
+    }
+
+    const service = new NewService(props);
+    service.__mapStateToProps = mapStateToProps;
+
     if (!(service instanceof Service)) {
       throw new Error('Each service should be an instance of Service class');
     }
 
     const idx = this._services.indexOf(service);
+
     if (idx < 0) {
       this._services.push(service);
       this._servicesHash[service.getName()] = service;
@@ -33,6 +52,7 @@ export default class ServiceManager {
       this._services.sort((a, b) => {
         return a.priority > b.priority ? 1 : a.priority < b.priority ? -1 : 0;
       });
+
       if (this._servicesInitialized) {
         service.initialize(this._store);
       }
@@ -78,6 +98,11 @@ export default class ServiceManager {
 
   loop(timestamp) {
     this.frameId = requestFrame(this.loop.bind(this));
-    this._services.forEach(service => service.update(timestamp));
+    const state = this._store.getState();
+    this._services.forEach(service => {
+      const mapStateToProps = service.__mapStateToProps;
+      mapStateToProps && service.updateProps(mapStateToProps(state));
+      service.update(timestamp);
+    });
   }
 }

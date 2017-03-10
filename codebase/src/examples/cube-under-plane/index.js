@@ -5,7 +5,9 @@ import {
   ServiceManager,
   SceneGraphService,
   ContainerService,
-  RendererService
+  RendererService,
+  KeyboardService,
+  MouseService,
 } from '../../';
 
 import reducer from './lib/reducer';
@@ -14,18 +16,55 @@ import createBox from './lib/entities/box';
 import createGround from './lib/entities/ground';
 import createLight from './lib/entities/light';
 
-const { actions } = Scene;
+import { actions as playerActions } from 'state/player';
+import { actions as keyboardActions } from 'state/keyboard';
+import { actions as mouseActions } from 'state/mouse';
 
-const sceneGraphService = new SceneGraphService();
-const containerService = new ContainerService();
-const rendererService = new RendererService();
+const { actions } = Scene;
 
 const store = window.STORE = createStore(reducer);
 const serviceManager = new ServiceManager(store);
 
-serviceManager.addService(sceneGraphService);
-serviceManager.addService(containerService);
-serviceManager.addService(rendererService);
+serviceManager.addService(SceneGraphService);
+serviceManager.addService(ContainerService);
+serviceManager.addService(RendererService);
+serviceManager.addService(KeyboardService, {
+  connector: {
+    mapStateToProps(state) {
+      return {
+        state: state.keyboard,
+      };
+    },
+    mapDispatchToProps(dispatch) {
+      return {
+        startAction(action) {
+          dispatch(keyboardActions.startAction(action));
+        },
+        stopAction(action) {
+          dispatch(keyboardActions.stopAction(action));
+        }
+      };
+    }
+  },
+});
+
+serviceManager.addService(MouseService, {
+  connector: {
+    mapDispatchToProps(dispatch) {
+      return {
+        setPosition(position) {
+          dispatch(mouseActions.setMousePosition(position));
+        },
+        setButtons(buttons) {
+          dispatch(mouseActions.setMouseButtons(buttons));
+        },
+        setScroll(scroll) {
+          dispatch(mouseActions.setMouseScroll(scroll));
+        }
+      };
+    }
+  }
+});
 
 serviceManager.run();
 
@@ -56,3 +95,6 @@ createBox({
   position: [0, 10, 0],
 }).forEach(action => store.dispatch(action));
 store.dispatch(actions.addEntityChild(rootId, boxId));
+
+const playerId = uuid.v1();
+store.dispatch(playerActions.createPlayer(playerId));

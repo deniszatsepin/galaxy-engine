@@ -1,0 +1,2 @@
+export const PLAYER_CREATE = 'PLAYER_CREATE';
+export const PLAYER_DELETE = 'PLAYER_DELETE';

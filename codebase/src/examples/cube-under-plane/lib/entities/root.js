@@ -1,5 +1,5 @@
-import { actions } from 'core/scene';
-import { actions as transformActions } from 'components/transform';
+import { actions } from 'state/scene';
+import { actions as transformActions } from 'state/transform';
 
 const { addTransform } = transformActions;
 

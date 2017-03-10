@@ -52,6 +52,14 @@ export default class ContainerService extends Service {
   get element() {
     return this._element;
   }
+
+  get offset() {
+    const rect = this._element.getBoundingClientRect();
+    return {
+      left: rect.left + window.scrollX,
+      top: rect.top + window.scrollY
+    };
+  }
 }
 
 function makeDefaultContainer() {

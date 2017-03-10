@@ -1,10 +1,10 @@
 import createCube from 'primitive-cube';
 
 import createSimpleMaterial from 'materials/simple';
-import { actions } from 'core/scene';
-import { actions as transformActions } from 'components/transform';
-import { actions as visualActions } from 'components/visual';
-import { actions as lightActions } from 'components/light';
+import { actions } from 'state/scene';
+import { actions as transformActions } from 'state/transform';
+import { actions as visualActions } from 'state/visual';
+import { actions as lightActions } from 'state/light';
 
 const { addTransform } = transformActions;
 const { addVisual } = visualActions;

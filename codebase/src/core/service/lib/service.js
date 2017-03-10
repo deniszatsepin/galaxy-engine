@@ -10,6 +10,7 @@ export default class Service {
     this._store = null;
     this._name = params.name;
     this._priority = params.priority || 100;
+    this._props = params;
   }
 
   attach(scene) {
@@ -33,6 +34,10 @@ export default class Service {
     this._initialized = false;
   }
 
+  updateProps(props) {
+    Object.assign(this.props, props);
+  }
+
   update(timestamp) {
   }
 
@@ -46,5 +51,9 @@ export default class Service {
 
   get manager() {
     return this._scene;
+  }
+
+  get props() {
+    return this._props;
   }
 }

@@ -2,7 +2,7 @@
 
 import { mat4 } from 'gl-matrix';
 import Service from 'core/service';
-import { actions } from 'components/transform';
+import { actions } from 'state/transform';
 
 export default class SceneGraphService extends Service {
 

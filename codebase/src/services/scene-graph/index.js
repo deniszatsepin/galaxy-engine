@@ -1,3 +1,1 @@
-import SceneGraphService from './lib/scene-graph';
-
-export default SceneGraphService;
+export { default } from './lib/scene-graph';

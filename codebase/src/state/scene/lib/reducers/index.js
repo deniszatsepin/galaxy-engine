@@ -4,6 +4,7 @@ import {
   ENTITY_CREATE,
   ENTITY_DELETE,
   ENTITY_SET_ROOT,
+  SCENE__SET_CAMERA,
 } from '../constants';
 
 import light from './light.reducer';
@@ -81,6 +82,13 @@ export default function createSceneReducer(reducers) {
       return {
         ...state,
         rootId: action.entityId,
+      };
+    }
+
+    if (action.type === SCENE__SET_CAMERA) {
+      return {
+        ...state,
+        cameraId: action.cameraId,
       };
     }
 

@@ -2,9 +2,9 @@ import { quat } from 'gl-matrix';
 import createPlane from 'primitive-plane';
 
 import createLambertMaterial from 'materials/lambert';
-import { actions } from 'core/scene';
-import { actions as transformActions } from 'components/transform';
-import { actions as visualActions } from 'components/visual';
+import { actions } from 'state/scene';
+import { actions as transformActions } from 'state/transform';
+import { actions as visualActions } from 'state/visual';
 
 const { addTransform } = transformActions;
 const { addVisual } = visualActions;
