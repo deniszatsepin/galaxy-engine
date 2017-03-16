@@ -52,11 +52,11 @@ module.exports = function (env) {
     devtool: isProd ? 'inline-source-map' : 'eval',
     context: sourcePath,
     entry: {
-      html: './examples/cube-under-plane/index.html',
+      html: './examples/gltf-model/index.html',
       js: [
         'webpack-dev-server/client?http://localhost:3000',
         'webpack/hot/only-dev-server',
-        './examples/cube-under-plane/index.js',
+        './examples/gltf-model/index.js',
       ],
     },
     output: {

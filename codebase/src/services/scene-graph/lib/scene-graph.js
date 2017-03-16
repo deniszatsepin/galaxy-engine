@@ -38,11 +38,13 @@ export default class SceneGraphService extends Service {
 
       state = this.store.getState().scene;
       parent = state[state.rootId];
+    } else {
+      parent = state[parent.entityId];
     }
 
     const children = parent.childIds.map(id => state[id]);
     children.forEach(child => {
-      if (child !== prevState[child.entityId]) {
+      if (child !== prevState[child.entityId] || parent !== prevState[parent.entityId]) {
         const matrices = calculateMatrices(child, parent);
         this.store.dispatch(actions.updateMatrices(child.entityId, matrices));
       }

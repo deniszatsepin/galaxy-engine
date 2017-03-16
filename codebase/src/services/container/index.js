@@ -1,3 +1,1 @@
-import ContainerService from './lib/container-service';
-
-export default ContainerService;
+export { default } from './lib/container-service';
