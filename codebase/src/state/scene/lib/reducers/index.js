@@ -3,6 +3,8 @@ import {
   ENTITY_REMOVE,
   ENTITY_CREATE,
   ENTITY_DELETE,
+  ENTITY__SET_PARENT,
+  ENTITY__UNSET_PARENT,
   ENTITY_SET_ROOT,
   SCENE__SET_CAMERA,
 } from '../constants';
@@ -33,6 +35,7 @@ function createNodeReducer(reducers) {
       case ENTITY_CREATE: {
         return {
           entityId: action.entityId,
+          parentId: null,
           childIds: [],
         };
       }
@@ -43,6 +46,16 @@ function createNodeReducer(reducers) {
           childIds: childIds(state.childIds, action),
         };
       }
+      case ENTITY__SET_PARENT:
+        return {
+          ...state,
+          parentId: action.parentId,
+        };
+      case ENTITY__UNSET_PARENT:
+        return {
+          ...state,
+          parentId: null,
+        };
       default: {
         return entity(state, action);
       }
@@ -88,13 +101,32 @@ export default function createSceneReducer(reducers) {
     if (action.type === SCENE__SET_CAMERA) {
       return {
         ...state,
-        cameraId: action.cameraId,
+        cameraId: action.entityId,
       };
     }
 
-    return {
-      ...state,
-      [entityId]: node(state[entityId], action),
-    };
+    const nextEntityState = node(state[entityId], action);
+    
+    if (action.type === ENTITY_ADD || action.type === ENTITY_REMOVE) {
+      const childId = action.childId;
+      return {
+        ...state,
+        [entityId]: nextEntityState,
+        [childId]: node(state[childId], {
+          type: action.type === ENTITY_ADD ? ENTITY__SET_PARENT : ENTITY__UNSET_PARENT,
+          entityId: childId,
+          parentId: entityId,
+        }),
+      };
+    }
+
+    if (nextEntityState !== state[entityId]) {
+      return {
+        ...state,
+        [entityId]: nextEntityState,
+      };
+    }
+
+    return state;
   };
 }

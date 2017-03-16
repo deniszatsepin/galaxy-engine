@@ -8,6 +8,7 @@ import {
   RendererService,
   KeyboardService,
   MouseService,
+  OrbitCameraService,
 } from '../../';
 
 import reducer from './lib/reducer';
@@ -15,10 +16,12 @@ import createRoot from './lib/entities/root';
 import createBox from './lib/entities/box';
 import createGround from './lib/entities/ground';
 import createLight from './lib/entities/light';
+import createCamera from './lib/entities/camera';
 
 import { actions as playerActions } from 'state/player';
 import { actions as keyboardActions } from 'state/keyboard';
 import { actions as mouseActions } from 'state/mouse';
+import { actions as transformActions } from 'state/transform';
 
 const { actions } = Scene;
 
@@ -47,7 +50,6 @@ serviceManager.addService(KeyboardService, {
     }
   },
 });
-
 serviceManager.addService(MouseService, {
   connector: {
     mapDispatchToProps(dispatch) {
@@ -62,6 +64,20 @@ serviceManager.addService(MouseService, {
           dispatch(mouseActions.setMouseScroll(scroll));
         }
       };
+    }
+  }
+});
+serviceManager.addService(OrbitCameraService, {
+  connector: {
+    mapDispatchToProps(dispatch) {
+      return {
+        setQuaternion(entityId, quaternion) {
+          dispatch(transformActions.setQuaternion(entityId, quaternion));
+        },
+        setPosition(entityId, position) {
+          dispatch(transformActions.setPosition(entityId, position));
+        }
+      }
     }
   }
 });
@@ -92,9 +108,18 @@ const boxId = uuid.v1();
 createBox({
   entityId: boxId,
   size: [10, 10, 10],
-  position: [0, 10, 0],
+  position: [30, 10, 30],
 }).forEach(action => store.dispatch(action));
 store.dispatch(actions.addEntityChild(rootId, boxId));
 
 const playerId = uuid.v1();
 store.dispatch(playerActions.createPlayer(playerId));
+
+const cameraId = uuid.v1();
+createCamera({
+  entityId: cameraId,
+  position: [10, 20, 10],
+  target: [30, 10, 30],
+}).forEach(action => store.dispatch(action));
+store.dispatch(actions.addEntityChild(rootId, cameraId));
+store.dispatch(actions.setCamera(cameraId));

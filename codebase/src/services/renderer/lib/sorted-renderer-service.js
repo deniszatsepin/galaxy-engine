@@ -83,12 +83,18 @@ export default class SortedRendererService extends Service {
     }
   }
 
+  getViewMatrix() {
+    const scene = this._store.getState().scene;
+    const camera = scene[scene.cameraId];
+    return camera.transform.worldMatrixInvert;
+  }
+
   update(timestamp) {
     super.update(timestamp);
     this.fps(timestamp);
 
     //TODO: should be replaced with information from camera.
-    mat4.lookAt(this._viewMatrix, [40, 40, 40], [0, 0, 0], [0, 1, 0]);
+    //mat4.lookAt(this._viewMatrix, [40, 40, 40], [0, 0, 0], [0, 1, 0]);
     this.prerender();
 
     // let angle = (timestamp / 2000) % (Math.PI * 2);
@@ -97,6 +103,7 @@ export default class SortedRendererService extends Service {
 
     if (this.renderables) {
       this.updateGraph();
+      mat4.copy(this._viewMatrix, this.getViewMatrix());
       this.render();
     } else {
       const state = this._prevState = this._store.getState().scene;
@@ -118,7 +125,7 @@ export default class SortedRendererService extends Service {
     //Bind default framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     //Set viewport
-    gl.viewport(0, 0, this._canvas.width|0, this._canvas.height|0);
+    gl.viewport(0, 0, this._canvas.width || 0, this._canvas.height || 0);
 
     //Clear buffers
     if(this._clearFlags & gl.STENCIL_BUFFER_BIT) {
@@ -183,7 +190,7 @@ export default class SortedRendererService extends Service {
     const state = this.store.getState().scene;
     const keys = Object.keys(state);
     keys.forEach(key => {
-      if (key === 'rootId') return;
+      if (key === 'rootId' || key === 'cameraId') return;
 
       const prev = this._prevState[key];
       const next = state[key];
@@ -215,7 +222,7 @@ export default class SortedRendererService extends Service {
   traverse(state, newKeys) {
     const keys = newKeys || Object.keys(state);
     const entities = keys
-      .filter(key => key !== 'rootId')
+      .filter(key => key !== 'rootId' && key !== 'cameraId')
       .map(key => state[key]);
 
     this.renderables = entities.reduce((acc, entity) => {
@@ -260,7 +267,7 @@ class DefaultCamera {
     this.fovy = params.fovy || 60 * (Math.PI / 180);
     this.aspect = params.aspect || 1;
     this.near = params.near || .1;
-    this.far = params.far || 100;
+    this.far = params.far || 1000;
   }
 }
 

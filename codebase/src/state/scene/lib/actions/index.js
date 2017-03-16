@@ -4,6 +4,7 @@ import {
   ENTITY_ADD,
   ENTITY_REMOVE,
   ENTITY_SET_ROOT,
+  SCENE__SET_CAMERA,
 } from '../constants';
 
 export function createEntity(entityId) {
@@ -39,6 +40,13 @@ export function removeEntityChild(entityId, childId) {
 export function setRootEntity(entityId) {
   return {
     type: ENTITY_SET_ROOT,
+    entityId,
+  };
+}
+
+export function setCamera(entityId) {
+  return {
+    type: SCENE__SET_CAMERA,
     entityId,
   };
 }
