@@ -98,20 +98,20 @@ createRoot({
   entityId: rootId,
 }).forEach(action => store.dispatch(action));
 
-const groundId = uuid.v1();
-createGround({
-  entityId: groundId,
-  position: [0, 0, 0],
-  size: [100, 100]
-}).forEach(action => store.dispatch(action));
-store.dispatch(actions.addEntityChild(rootId, groundId));
+// const groundId = uuid.v1();
+// createGround({
+//   entityId: groundId,
+//   position: [0, 0, 0],
+//   size: [100, 100]
+// }).forEach(action => store.dispatch(action));
+// store.dispatch(actions.addEntityChild(rootId, groundId));
 
-const lightId = uuid.v1();
-createLight({
-  entityId: lightId,
-  position: [30, 60, 60],
-}).forEach(action => store.dispatch(action));
-store.dispatch(actions.addEntityChild(rootId, lightId));
+// const lightId = uuid.v1();
+// createLight({
+//   entityId: lightId,
+//   position: [30, 60, 60],
+// }).forEach(action => store.dispatch(action));
+// store.dispatch(actions.addEntityChild(rootId, lightId));
 
 // const boxId = uuid.v1();
 // createBox({

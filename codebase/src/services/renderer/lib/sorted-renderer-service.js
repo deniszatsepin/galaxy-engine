@@ -232,7 +232,8 @@ export default class SortedRendererService extends Service {
       });
       const renderUnits = entity.visual.map(visual => new RenderUnit({
         geometry: visual.geometry,
-        material: visual.material
+        material: visual.material,
+        skin: visual.skin,
       }));
       sceneNode.addRenderUnits(renderUnits);
 

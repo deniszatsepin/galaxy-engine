@@ -7,10 +7,12 @@ import {
   SCENE__SET_CAMERA,
 } from '../constants';
 
-export function createEntity(entityId) {
+export function createEntity(entityId, name, params = {}) {
   return {
     type: ENTITY_CREATE,
     entityId,
+    name,
+    ...params,
   };
 }
 

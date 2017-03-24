@@ -1,3 +1,4 @@
+import uuid from 'uuid';
 import createCube from 'primitive-cube';
 
 import createLambertMaterial from 'materials/lambert';
@@ -16,13 +17,15 @@ export default function createBox(params) {
   } = params;
   const record = [];
 
-  record.push(actions.createEntity(entityId));
+  record.push(actions.createEntity(entityId, 'Box'));
   record.push(addTransform(entityId, {
     position: position,
   }));
   record.push(addVisual(entityId, {
+    visualId: uuid.v1(),
     geometry: createCube(size[0], size[1], size[2], 1, 1, 1),
-    material: createLambertMaterial(),
+    material: createLambertMaterial({
+    }),
   }));
 
   return record;

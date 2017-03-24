@@ -1,5 +1,6 @@
 import req from 'superagent';
 import loadBuffers from './buffers';
+import loadImages from './images';
 
 function load(uri) {
   return req.get(uri).accept('json')
@@ -21,6 +22,9 @@ function loadResources(gltf) {
   const promises = [
     loadBuffers(gltf).then((buffers) => {
       resources.buffers = buffers;
+    }),
+    loadImages(gltf).then((images) => {
+      resources.images = images;
     }),
   ];
 

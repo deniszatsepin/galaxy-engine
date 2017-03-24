@@ -23,6 +23,7 @@ export default function transform(state = {}, action) {
       return {
         position: action.position || vec3.create(),
         quaternion: action.quaternion || quat.create(),
+        scale: action.scale || vec3.fromValues(1, 1, 1),
       };
     }
     case REMOVE_COMPONENT_TRANSFORM: {
@@ -91,10 +92,9 @@ export default function transform(state = {}, action) {
     case TRANSFORM__UPDATE_MATRICES: {
       return {
         ...state,
-        localMatrix: action.localMatrix,
-        worldMatrix: action.worldMatrix,
-        normalMatrix: action.normalMatrix,
-        worldMatrixInvert: action.worldMatrixInvert
+        ...Object.keys(action)
+          .filter(key => ['type', 'entityId'].indexOf(key) === -1)
+          .reduce((acc, key) => { acc[key] = action[key]; return acc;}, {}),
       }
     }
     default: {

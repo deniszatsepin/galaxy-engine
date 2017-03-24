@@ -1,3 +1,4 @@
+import uuid from 'uuid';
 import createCube from 'primitive-cube';
 
 import createSimpleMaterial from 'materials/simple';
@@ -22,6 +23,7 @@ export default function createLight(params) {
     position: position,
   }));
   record.push(addVisual(entityId, {
+    visualId: uuid.v1(),
     geometry: createCube(.2, .2, .2, 1, 1, 1),
     material: createSimpleMaterial({
       lightColor: [1.0, .0, .0],

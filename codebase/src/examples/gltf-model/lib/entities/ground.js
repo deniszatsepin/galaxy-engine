@@ -1,3 +1,4 @@
+import uuid from 'uuid';
 import { quat } from 'gl-matrix';
 import createPlane from 'primitive-plane';
 
@@ -27,6 +28,7 @@ export default function createGround(params) {
     quaternion,
   }));
   record.push(addVisual(entityId, {
+    visualId: uuid.v1(),
     geometry: createPlane(size[0], size[1], size[0] * 2, size[1] * 2),
     material: createLambertMaterial(),
   }));

@@ -5,5 +5,6 @@ export default function createLambertMaterial(params = {}) {
   return {
     vertexShader,
     fragmentShader,
+    ...params,
   };
 }

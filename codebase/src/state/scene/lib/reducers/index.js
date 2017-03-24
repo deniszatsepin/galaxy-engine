@@ -37,6 +37,9 @@ function createNodeReducer(reducers) {
           entityId: action.entityId,
           parentId: null,
           childIds: [],
+          ...Object.keys(action)
+            .filter(key => ['type', 'entityId'].indexOf(key) === -1)
+            .reduce((acc, key) => { acc[key] = action[key]; return acc; }, {}),
         };
       }
       case ENTITY_ADD:
@@ -106,7 +109,7 @@ export default function createSceneReducer(reducers) {
     }
 
     const nextEntityState = node(state[entityId], action);
-    
+
     if (action.type === ENTITY_ADD || action.type === ENTITY_REMOVE) {
       const childId = action.childId;
       return {

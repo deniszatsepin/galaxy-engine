@@ -1,8 +1,7 @@
-'use strict';
-
 import {
   ADD_COMPONENT_VISUAL,
   REMOVE_COMPONENT_VISUAL,
+  VISUAL__UPDATE,
 } from './visual.constants';
 
 export default function visual(state = [], action) {
@@ -10,16 +9,30 @@ export default function visual(state = [], action) {
     case ADD_COMPONENT_VISUAL: {
       return [
         ...state,
-        Object.assign(
-          {},
-          Object.keys(action)
+        {
+          ...Object.keys(action)
             .filter(key => key !== 'type' && key !== 'entityId')
             .reduce((acc, key) => { acc[key] = action[key]; return acc; }, {})
-        )
+        },
       ];
     }
     case REMOVE_COMPONENT_VISUAL: {
-      return state.filter(visual => visual !== action.visual);
+      return state.filter(visual => visual.visualId !== action.visualId);
+    }
+    case VISUAL__UPDATE: {
+      return [
+        ...state.filter(visual => visual.visualId !== action.visualId),
+        {
+          ...Object.keys(action)
+            .filter(key => key !== 'type' && key !== 'entityId')
+            .reduce((acc, key) => {
+              return {
+                ...acc,
+                [`${key}`]: action[key],
+              };
+            }, {}),
+        }
+      ]
     }
     default: {
       return state;

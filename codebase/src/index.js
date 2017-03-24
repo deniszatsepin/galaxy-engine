@@ -15,6 +15,7 @@ import * as Scene from './state/scene';
 import * as LightState from './state/light';
 import * as TransformState from './state/transform';
 import * as VisualState from './state/visual';
+import * as SkinState from './state/skin';
 import * as PlayerState from './state/player';
 import * as KeyboardState from './state/keyboard';
 import * as MouseState from './state/mouse';
@@ -37,6 +38,7 @@ export {
   LightState,
   TransformState,
   VisualState,
+  SkinState,
   PlayerState,
   KeyboardState,
   MouseState,

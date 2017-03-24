@@ -1,8 +1,10 @@
+import { vec3, quat, mat4 } from 'gl-matrix';
 import uuid from 'uuid';
 import loadBuffers from './buffers';
 import { actions } from 'state/scene';
 import { actions as transformActions} from 'state/transform';
 import { actions as visualActions} from 'state/visual';
+import { actions as skinActions } from 'state/skin';
 import createLambertMaterial from 'materials/lambert';
 
 const {
@@ -15,6 +17,9 @@ const {
 const {
   addVisual
 } = visualActions;
+const {
+  addSkin,
+} = skinActions;
 
 export {
   getSceneNames,
@@ -37,11 +42,27 @@ function getSceneNodes(gltf, sceneName) {
   return scene.nodes.map(name => gltf.nodes[name]);
 }
 
+mat4.getScale = function(vec, mat) {
+  let sx = vec3.length(vec3.fromValues(mat[0], mat[1], mat[2]));
+  const sy = vec3.length(vec3.fromValues(mat[4], mat[5], mat[6]));
+  const sz = vec3.length(vec3.fromValues(mat[8], mat[9], mat[10]));
+
+  // if determine is negative, we need to invert one scale
+  const det = mat4.determinant(mat);
+  if ( det < 0 ) {
+    sx = - sx;
+  }
+
+  return vec3.set(vec, sx, sy, sz);
+}
+
 function parseNode(gltf, nodeName, parent) {
   const node = gltf.nodes[nodeName];
   const record = [];
   const entityId = uuid.v4();
-  record.push(createEntity(entityId));
+  record.push(createEntity(entityId, node.name, {
+    jointName: node.jointName,
+  }));
 
   if (parent) {
     record.push(addEntityChild(parent, entityId));
@@ -49,17 +70,31 @@ function parseNode(gltf, nodeName, parent) {
 
   if (node.matrix) {
     record.push(addTransform(entityId, {
-      matrix: node.matrix,
+      position: mat4.getTranslation(vec3.create(), node.matrix),
+      rotation: mat4.getRotation(quat.create(), node.matrix),
+      scale: mat4.getScale(vec3.create(), node.matrix),
     }));
   }
 
   if (node.translation) {
     record.push(addTransform(entityId, {
-      position: node.translation,
-      rotation: node.rotation,
-      scale: node.scale,
+      position: new Float32Array(node.translation),
+      rotation: new Float32Array(node.rotation),
+      scale: new Float32Array(node.scale),
     }));
   }
+
+  let skin;
+  if (node.skin) {
+    const skinInfo = gltf.skins[node.skin];
+    const inverseBindMatrices = parseAccessor(gltf, skinInfo.inverseBindMatrices);
+    skin = {
+      ...skinInfo,
+      bindShapeMatrix: new Float32Array(skinInfo.bindShapeMatrix),
+      inverseBindMatrices,
+    };
+  }
+
 
   if (node.meshes) {
     node.meshes
@@ -67,8 +102,10 @@ function parseNode(gltf, nodeName, parent) {
       .forEach(primitives => {
         primitives.forEach(visual => {
           record.push(addVisual(entityId, {
+            visualId: uuid.v1(),
             geometry: visual.geometry,
-            material: createLambertMaterial(),
+            material: createLambertMaterial(visual.material),
+            skin,
           }));
         })
       });
@@ -96,18 +133,42 @@ function parseMesh(gltf, meshName) {
         attributes: {
           NORMAL: normals,
           POSITION: positions,
+          TEXCOORD_0: uvs,
+          JOINT: joint,
+          WEIGHT: weight,
         },
         indices: cells,
+        material: materialId,
       } = primitive;
+
+      const material = parseMaterial(gltf, materialId);
 
       return {
         geometry: {
           cells: parseAccessor(gltf, cells),
           positions: parseAccessor(gltf, positions),
           normals: parseAccessor(gltf, normals),
+          uvs: parseAccessor(gltf, uvs),
+          joint: parseAccessor(gltf, joint),
+          weight: parseAccessor(gltf, weight),
         },
+        material,
       };
     });
+}
+
+function parseMaterial(gltf, materialId) {
+  const material = gltf.materials[materialId].values;
+  const textureId = material.diffuse;
+  const texture = gltf.textures[textureId];
+  const imageId = texture.source;
+  return {
+    ...material,
+    diffuse: {
+      ...texture,
+      source: gltf.__resources.images[imageId],
+    }
+  }
 }
 
 function parseAccessor(gltf, name) {
