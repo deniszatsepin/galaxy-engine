@@ -38,7 +38,7 @@ void main()
   //transform vertex into the eye space
   vec4 pos = viewMatrix * modelMatrix * skinMat * vec4(positions, 1.0);
   vPosition = pos.xyz;
-  vNormal = normalMatrix * normals;
+  vNormal = normalMatrix * mat3(skinMat) * normals;
 
   vLightPosition = vec3(viewMatrix * modelMatrix * vec4(lightPosition, 1.0));
 

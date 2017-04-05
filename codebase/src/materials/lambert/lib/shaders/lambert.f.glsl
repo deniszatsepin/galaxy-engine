@@ -19,7 +19,7 @@ void main()
   //calculate direction towards the light
   vec3 L = normalize(vLightPosition - vPosition);
   vec3 eyeDir = normalize(-vPosition);
-  vec3 ambient = vec3(0.04, 0.09, 0.04);
+  vec3 ambient = vec3(0.01, 0.01, 0.01);
   vec4 diffuse = texture2D(texture, vTexCoord);
 
   if (dot(N, eyeDir) < 0.0) {

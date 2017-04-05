@@ -147,7 +147,7 @@ load('/models/glTF/monster.gltf')
     const model = state.scene[modelId];
     const rotation = model.transform.quaternion;
     const q = quat.create();
-    quat.rotateX(q, rotation, -Math.PI / 2);
-    store.dispatch(transformActions.setQuaternion(modelId, q));
+    // quat.rotateX(q, rotation, -Math.PI / 2);
+    // store.dispatch(transformActions.setQuaternion(modelId, q));
   })
   .catch((e) => console.log(e));

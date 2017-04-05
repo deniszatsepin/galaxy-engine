@@ -55,14 +55,14 @@ export default class SceneGraphService extends Service {
           const joint = getJointByName(state, jointName);
           const jointMatrix = mat4.create();
           const inverseBindMatrix = inverseBindMatrices.slice(idx * 16, (idx + 1) * 16);
+          const bindShapeMatrix = skin.bindShapeMatrix;
 
-          const tmp = mat4.mul(mat4.create(), inverseBindMatrix, skin.bindShapeMatrix);
-          mat4.mul(jointMatrix, joint.transform.jointWorldMatrix, tmp);
-          return mat4.mul(mat4.create(), joint.transform.worldMatrixInvert, jointMatrix);
+          const tmp = mat4.mul(mat4.create(), inverseBindMatrix, bindShapeMatrix);
+          // const tmp2 = mat4.mul(mat4.create(), joint.transform.worldMatrix, tmp);
+          // const res = mat4.mul(mat4.create(), parent.transform.worldMatrixInvert, tmp2);
 
-          // const tmp = mat4.mul(mat4.create(), joint.transform.jointWorldMatrix, inverseBindMatrix);
-          // mat4.mul(jointMatrix, tmp, skin.bindShapeMatrix);
-          // return mat4.mul(mat4.create(), joint.transform.worldMatrixInvert, jointMatrix);
+          const res = mat4.mul(mat4.create(), parent.transform.worldMatrixInvert, bindShapeMatrix);
+          return res;
         });
         this.store.dispatch(updateVisual(parent.entityId, {
           ...parent.visual[0],
@@ -77,13 +77,8 @@ export default class SceneGraphService extends Service {
     const children = parent.childIds.map(id => state[id]);
     children.forEach(child => {
       if (child !== prevState[child.entityId] || parent !== prevState[parent.entityId]) {
-        if (!child.jointName) {
-          const matrices = calculateMatrices(child, parent);
-          this.store.dispatch(actions.updateMatrices(child.entityId, matrices));
-        } else {
-          const jointMatrices = calculateJointMatrices(child, parent);
-          this.store.dispatch(actions.updateMatrices(child.entityId, jointMatrices));
-        }
+        const matrices = calculateMatrices(child, parent);
+        this.store.dispatch(actions.updateMatrices(child.entityId, matrices));
       }
       this.traverse(child);
     });
@@ -117,38 +112,6 @@ function calculateMatrices(child, parent) {
     localMatrix,
     worldMatrix,
     worldMatrixInvert,
-  };
-}
-
-function calculateJointMatrices(child, parent) {
-  const jointMatrix = mat4.create();
-  const jointWorldMatrix = mat4.create();
-  const jointWorldMatrixInvert = mat4.create();
-  const transform = child.transform;
-
-  // if (parent && !parent.transform.jointWorldMatrix) return;
-
-  mat4.fromRotationTranslationScale(
-    jointMatrix,
-    transform.quaternion,
-    transform.position,
-    transform.scale,
-  );
-
-  if (!parent.transform.jointWorldMatrix) {
-    // mat4.copy(jointWorldMatrix, jointMatrix);
-    mat4.multiply(jointWorldMatrix, jointMatrix, parent.transform.localMatrix);
-  } else {
-    mat4.multiply(jointWorldMatrix, jointMatrix, parent.transform.jointWorldMatrix);
-  }
-
-  mat4.invert(jointWorldMatrixInvert, jointWorldMatrix);
-
-  return {
-    worldMatrixInvert: parent.transform.worldMatrixInvert,
-    jointMatrix,
-    jointWorldMatrix,
-    jointWorldMatrixInvert,
   };
 }
 

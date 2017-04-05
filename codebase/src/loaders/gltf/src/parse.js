@@ -79,7 +79,7 @@ function parseNode(gltf, nodeName, parent) {
   if (node.translation) {
     record.push(addTransform(entityId, {
       position: new Float32Array(node.translation),
-      rotation: new Float32Array(node.rotation),
+      quaternion: new Float32Array(node.rotation),
       scale: new Float32Array(node.scale),
     }));
   }
