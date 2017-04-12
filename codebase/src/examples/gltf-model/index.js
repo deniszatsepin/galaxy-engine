@@ -70,7 +70,7 @@ serviceManager.addService(MouseService, {
           dispatch(mouseActions.setMouseButtons(buttons));
         },
         setScroll(scroll) {
-          dispatch(mouseActions.setMouseScroll(scroll));
+          dispatc-h(mouseActions.setMouseScroll(scroll));
         }
       };
     }
@@ -109,7 +109,7 @@ store.dispatch(actions.addEntityChild(rootId, groundId));
 const lightId = uuid.v1();
 createLight({
   entityId: lightId,
-  position: [30, 60, 60],
+  position: [30, 160, -10],
 }).forEach(action => store.dispatch(action));
 store.dispatch(actions.addEntityChild(rootId, lightId));
 

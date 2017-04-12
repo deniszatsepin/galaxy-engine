@@ -21,7 +21,7 @@ void main()
   //calculate direction towards the light
   vec3 L = normalize(vLightPosition - vPosition);
   vec3 eyeDir = normalize(-vPosition);
-  vec3 ambient = vec3(0.01, 0.01, 0.01);
+  vec3 ambient = vec3(0.00, 0.00, 0.00);
 
 #ifdef TEXTURE
   vec4 diffuse = texture2D(texture, vTexCoord);
@@ -36,7 +36,7 @@ void main()
     float Id = lambert(L, N);
 
     //surface and light color, full white
-    vec4 baseColor = vec4(1.0);
+    vec4 baseColor = vec4(0.1);
     vec4 lightColor = vec4(1.0);
 
     vec4 finalColor = vec4((baseColor.rgb * lightColor.rgb * Id) + ambient, 1.0);
