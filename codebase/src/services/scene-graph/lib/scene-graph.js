@@ -51,6 +51,7 @@ export default class SceneGraphService extends Service {
       const skin = parent.visual[0].skin;
       if (skin) {
         const inverseBindMatrices = skin.inverseBindMatrices;
+        const parentInvert = mat4.invert(mat4.create(), parent.transform.localMatrix);
         const matrices = skin.jointNames.map((jointName, idx) => {
           const joint = getJointByName(state, jointName);
           const jointMatrix = mat4.create();
@@ -58,10 +59,9 @@ export default class SceneGraphService extends Service {
           const bindShapeMatrix = skin.bindShapeMatrix;
 
           const tmp = mat4.mul(mat4.create(), inverseBindMatrix, bindShapeMatrix);
-          // const tmp2 = mat4.mul(mat4.create(), joint.transform.worldMatrix, tmp);
-          // const res = mat4.mul(mat4.create(), parent.transform.worldMatrixInvert, tmp2);
+          const tmp2 = mat4.mul(mat4.create(), joint.transform.worldMatrix, tmp);
 
-          const res = mat4.mul(mat4.create(), parent.transform.worldMatrixInvert, bindShapeMatrix);
+          const res = mat4.mul(mat4.create(), parentInvert, tmp2);
           return res;
         });
         this.store.dispatch(updateVisual(parent.entityId, {
@@ -100,10 +100,18 @@ function calculateMatrices(child, parent) {
     transform.scale,
   );
 
-  if (!parent) {
-    mat4.copy(worldMatrix, localMatrix);
+  if (child.jointName) {
+    if (!parent.jointName) {
+      mat4.multiply(worldMatrix, parent.transform.localMatrix, localMatrix);
+    } else {
+      mat4.multiply(worldMatrix, parent.transform.worldMatrix, localMatrix);
+    }
   } else {
-    mat4.multiply(worldMatrix, localMatrix, parent.transform.worldMatrix);
+    if (!parent) {
+      mat4.copy(worldMatrix, localMatrix);
+    } else {
+      mat4.multiply(worldMatrix, parent.transform.worldMatrix, localMatrix);
+    }
   }
 
   mat4.invert(worldMatrixInvert, worldMatrix);

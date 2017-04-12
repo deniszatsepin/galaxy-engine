@@ -22,7 +22,7 @@ export default function createGround(params) {
   // make it horizontal
   quat.rotateX(quaternion, quat.create(), -Math.PI / 2);
 
-  record.push(actions.createEntity(entityId));
+  record.push(actions.createEntity(entityId, 'Ground'));
   record.push(addTransform(entityId, {
     position,
     quaternion,

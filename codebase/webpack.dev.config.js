@@ -54,7 +54,7 @@ module.exports = function (env) {
     entry: {
       html: './examples/gltf-model/index.html',
       js: [
-        'webpack-dev-server/client?http://localhost:3000',
+        'webpack-dev-server/client?http://localhost:5555',
         'webpack/hot/only-dev-server',
         './examples/gltf-model/index.js',
       ],
@@ -140,7 +140,7 @@ module.exports = function (env) {
       publicPath: '/',
       historyApiFallback: true,
       host: '0.0.0.0',
-      port: 3000,
+      port: 5555,
       compress: isProd,
       // inline: true,
       hot: isProd,

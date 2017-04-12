@@ -14,7 +14,7 @@ export default function createCamera(params) {
   } = params;
   const record = [];
 
-  record.push(actions.createEntity(entityId));
+  record.push(actions.createEntity(entityId, 'Camera'));
   record.push(addTransform(entityId, {
     position,
     quaternion: quat.create(),

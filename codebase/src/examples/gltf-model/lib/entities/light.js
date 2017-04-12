@@ -18,7 +18,7 @@ export default function createLight(params) {
   } = params;
   const record = [];
 
-  record.push(actions.createEntity(entityId));
+  record.push(actions.createEntity(entityId, 'Light'));
   record.push(addTransform(entityId, {
     position: position,
   }));

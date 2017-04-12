@@ -71,7 +71,7 @@ function parseNode(gltf, nodeName, parent) {
   if (node.matrix) {
     record.push(addTransform(entityId, {
       position: mat4.getTranslation(vec3.create(), node.matrix),
-      rotation: mat4.getRotation(quat.create(), node.matrix),
+      quaternion: mat4.getRotation(quat.create(), node.matrix),
       scale: mat4.getScale(vec3.create(), node.matrix),
     }));
   }
@@ -104,7 +104,10 @@ function parseNode(gltf, nodeName, parent) {
           record.push(addVisual(entityId, {
             visualId: uuid.v1(),
             geometry: visual.geometry,
-            material: createLambertMaterial(visual.material),
+            material: createLambertMaterial({
+              skinning: !!node.skin,
+              ...visual.material,
+            }),
             skin,
           }));
         })

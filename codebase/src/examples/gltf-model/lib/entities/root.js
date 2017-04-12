@@ -9,7 +9,7 @@ export default function createBox(params) {
   } = params;
   const record = [];
 
-  record.push(actions.createEntity(entityId));
+  record.push(actions.createEntity(entityId, 'Root'));
   record.push(addTransform(entityId));
   record.push(actions.setRootEntity(entityId));
 

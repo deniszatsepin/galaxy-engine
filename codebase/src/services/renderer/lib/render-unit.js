@@ -81,7 +81,7 @@ export default class RenderUnit {
 
   render(data) {
     const params = Object.assign({}, data, this._materialParams, {
-      jointMat: this._skinInfo.matrices,
+      jointMat: this._skinInfo ? this._skinInfo.matrices : undefined,
     });
     if (!this._realized) return;
     const geometry = this._geometry;

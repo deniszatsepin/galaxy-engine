@@ -1,4 +1,3 @@
-precision mediump float;
 //vertex position in model space
 attribute vec3 positions;
 //vertex normal in model space
@@ -15,7 +14,9 @@ uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 uniform mat3 normalMatrix;
 //skin
+#ifdef SKINNING
 uniform mat4 jointMat[32];
+#endif
 
 //light gl_Position
 uniform vec3 lightPosition;
@@ -31,14 +32,20 @@ varying vec2 vTexCoord;
 void main()
 {
   //skin
+#ifdef SKINNING
   mat4 skinMat = weight.x * jointMat[int(joint.x)];
   skinMat += weight.y * jointMat[int(joint.y)];
   skinMat += weight.z * jointMat[int(joint.z)];
   skinMat += weight.w * jointMat[int(joint.w)];
-  //transform vertex into the eye space
   vec4 pos = viewMatrix * modelMatrix * skinMat * vec4(positions, 1.0);
-  vPosition = pos.xyz;
   vNormal = normalMatrix * mat3(skinMat) * normals;
+#else
+  vec4 pos = viewMatrix * modelMatrix * vec4(positions, 1.0);
+  vNormal = normalMatrix * normals;
+#endif
+
+  //transform vertex into the eye space
+  vPosition = pos.xyz;
 
   vLightPosition = vec3(viewMatrix * modelMatrix * vec4(lightPosition, 1.0));
 
