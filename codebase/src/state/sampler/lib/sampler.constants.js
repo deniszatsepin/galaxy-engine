@@ -1,0 +1,4 @@
+export const SAMPLER__START = 'SAMPLER__START';
+export const SAMPLER__UPDATE = 'SAMPLER__UPDATE';
+export const SAMPLER__STOP = 'SAMPLER__STOP';
+export const SAMPLER__PAUSE = 'SAMPLER__PAUSE'

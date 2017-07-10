@@ -10,6 +10,7 @@ import SceneGraphService from './services/scene-graph';
 import KeyboardService from './services/keyboard';
 import MouseService from './services/mouse';
 import OrbitCameraService from './services/orbit-camera';
+import AnimationService from './services/animation';
 
 import * as Scene from './state/scene';
 import * as LightState from './state/light';
@@ -33,6 +34,7 @@ export {
   KeyboardService,
   MouseService,
   OrbitCameraService,
+  AnimationService,
 
   Scene,
   LightState,

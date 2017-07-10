@@ -10,6 +10,7 @@ import {
   KeyboardService,
   MouseService,
   OrbitCameraService,
+  AnimationService,
 } from '../../';
 
 import reducer from './lib/reducer';
@@ -30,6 +31,7 @@ import {
   getScene,
   getSceneNodes,
   parseNode,
+  parseAnimations,
 } from 'loaders/gltf/src/parse';
 
 const { actions } = Scene;
@@ -90,6 +92,7 @@ serviceManager.addService(OrbitCameraService, {
     }
   }
 });
+serviceManager.addService(AnimationService);
 
 serviceManager.run();
 
@@ -138,6 +141,7 @@ load('/models/glTF/monster.gltf')
     console.log(gltf);
     const scene = getScene(gltf);
     console.log(scene);
+    parseAnimations(gltf).forEach(action => store.dispatch(action));
     const _actions = parseNode(gltf, scene.nodes[0]);
     const modelId = _actions[0].entityId;
     console.log(modelId);

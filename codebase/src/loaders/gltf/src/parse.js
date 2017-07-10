@@ -5,6 +5,7 @@ import { actions } from 'state/scene';
 import { actions as transformActions} from 'state/transform';
 import { actions as visualActions} from 'state/visual';
 import { actions as skinActions } from 'state/skin';
+import { actions as animationInfoActions } from 'state/animation-info';
 import createLambertMaterial from 'materials/lambert';
 
 const {
@@ -20,12 +21,16 @@ const {
 const {
   addSkin,
 } = skinActions;
+const {
+  addAnimationInfo,
+} = animationInfoActions;
 
 export {
   getSceneNames,
   getScene,
   getSceneNodes,
   parseNode,
+  parseAnimations,
 };
 
 function getSceneNames(gltf) {
@@ -172,6 +177,27 @@ function parseMaterial(gltf, materialId) {
       source: gltf.__resources.images[imageId],
     }
   }
+}
+
+function parseAnimations(gltf) {
+  const { animations } = gltf;
+
+  return Object
+    .keys(animations)
+    .map(key => Object.assign({}, animations[key], {
+      name: key,
+    }))
+    .map(animation => {
+      const parameters = animation.parameters;
+
+      animation.parameters = Object
+        .keys(parameters)
+        .reduce((acc, key) => Object.assign({}, acc, {
+          [`${key}`]: parseAccessor(gltf, parameters[key])
+        }), {});
+
+      return addAnimationInfo(animation.name, animation);
+    });
 }
 
 function parseAccessor(gltf, name) {

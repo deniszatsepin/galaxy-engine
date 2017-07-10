@@ -31,6 +31,14 @@ export function setQuaternion(entityId, quaternion) {
   };
 }
 
+export function setScale(entityId, scale) {
+  return {
+    type: constants.TRANSFORM__SET_SCALE,
+    entityId: entityId,
+    scale,
+  };
+}
+
 export function updateMatrices(entityId, matrices) {
   return {
     type: constants.TRANSFORM__UPDATE_MATRICES,

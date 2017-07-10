@@ -194,12 +194,25 @@ export default class SortedRendererService extends Service {
 
       const prev = this._prevState[key];
       const next = state[key];
-      if (prev && next && prev !== next && prev.transform !== next.transform) {
+      if (prev && next && prev !== next) {
         const node = this.getNodeByEntityUUID(next.entityId);
-        for (key in next.transform) {
-          let val = next.transform[key];
-          if (val) {
-            node[key] = val;
+        if (prev.transform !== next.transform) {
+          for (key in next.transform) {
+            let val = next.transform[key];
+            if (val) {
+              node[key] = val;
+            }
+          }
+        }
+        if (prev.visual !== next.visual) {
+          const node = this.renderables[next.entityId];
+          if (node) {
+            next.visual.forEach(visual => {
+              const prev = node.renderUnits.find(unit => unit.visualId === visual.visualId);
+              if (prev) {
+                prev._skinInfo = visual.skin;
+              }
+            });
           }
         }
       }
@@ -219,6 +232,7 @@ export default class SortedRendererService extends Service {
     this._prevState = state;
   }
 
+  // TODO: refactor to be able to add visuals on the fly
   traverse(state, newKeys) {
     const keys = newKeys || Object.keys(state);
     const entities = keys
@@ -231,9 +245,7 @@ export default class SortedRendererService extends Service {
         ...entity.transform,
       });
       const renderUnits = entity.visual.map(visual => new RenderUnit({
-        geometry: visual.geometry,
-        material: visual.material,
-        skin: visual.skin,
+        ...visual,
       }));
       sceneNode.addRenderUnits(renderUnits);
 

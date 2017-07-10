@@ -10,6 +10,7 @@ export default class RenderUnit {
     this._geometryInfo = params.geometry;
     this._materialInfo = params.material;
     this._skinInfo = params.skin;
+    this._visualId = params.visualId;
     this._materialParams = Object.keys(params.material)
       .filter(key => key !== 'fragmentShader' && key !== 'vertexShader')
       .reduce((acc, key) => Object.assign({}, {
@@ -19,6 +20,10 @@ export default class RenderUnit {
     this._material = null;
     this._hidden = params.hidden || false;
     this._realized = false;
+  }
+
+  get visualId() {
+    return this._visualId;
   }
 
   realize(params = {}) {

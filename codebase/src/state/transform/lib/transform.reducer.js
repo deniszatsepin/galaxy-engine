@@ -14,6 +14,7 @@ import {
 	TRANSFORM__ROTATE_X,
 	TRANSFORM__ROTATE_Y,
 	TRANSFORM__ROTATE_Z,
+  TRANSFORM__SET_SCALE,
   TRANSFORM__UPDATE_MATRICES,
 } from './transform.constants';
 
@@ -87,6 +88,12 @@ export default function transform(state = {}, action) {
       return {
         ...state,
         quaternion: quat.rotateZ(quat.create(), state.quaternion, action.rad),
+      };
+    }
+    case TRANSFORM__SET_SCALE: {
+      return {
+        ...state,
+        scale: vec3.clone(action.scale),
       };
     }
     case TRANSFORM__UPDATE_MATRICES: {
